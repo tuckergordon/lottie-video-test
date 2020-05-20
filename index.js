@@ -1,10 +1,10 @@
 var video = document.getElementById('bg-video');
-video.onloadeddata = (event => {
+video.onloadeddata = function() {
   console.log('video loaded');
-  video.ontimeupdate = (event) => {
+  video.ontimeupdate = function() {
     console.log('timeupdate: ', video.currentTime);
   };
-});
+};
 
 var animation = lottie.loadAnimation({
   container: document.getElementById('bm'),
@@ -22,12 +22,12 @@ function playAnimation() {
   var start = null;
   if (video) video.pause();
 
-  var step = timestamp => {
+  var step = function(timestamp) {
     if (!start) start = timestamp;
     var progress = timestamp - start;
     var time = progress / 1000;
 
-    video.onseeked = (event) => {
+    video.onseeked = function(event) {
       const seekedProgress = event.timeStamp - start;
       const seekedTime = seekedProgress / 1000;
       video.onseeked = null;
