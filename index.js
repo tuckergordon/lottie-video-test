@@ -4,7 +4,7 @@ video.onloadeddata = (event => {
   video.ontimeupdate = (event) => {
     console.log('timeupdate: ', video.currentTime);
   };
-})
+});
 
 var animation = lottie.loadAnimation({
   container: document.getElementById('bm'),
@@ -24,23 +24,32 @@ function playAnimation() {
 
   var step = timestamp => {
     if (!start) start = timestamp;
-    const progress = timestamp - start;
-    const time = progress / 1000;
+    var progress = timestamp - start;
+    var time = progress / 1000;
+
+    video.onseeked = (event) => {
+      const seekedProgress = event.timeStamp - start;
+      const seekedTime = seekedProgress / 1000;
+      video.onseeked = null;
+      animation.goToAndStop(seekedTime * 1000);
+      animationFrame = window.requestAnimationFrame(step);
+    }
 
     video.currentTime = time;
-    animation.goToAndStop(time * 1000);
+    // animation.goToAndStop(time * 1000);
 
     // loop
     if (time > duration) {
       start = null;
     }
-    animationFrame = window.requestAnimationFrame(step);
+    // animationFrame = window.requestAnimationFrame(step);
   }
 
   animationFrame = window.requestAnimationFrame(step);
 }
 
 function resetAnimation() {
+  video.onseeked = null;
   window.cancelAnimationFrame(animationFrame);
   video.currentTime = 0;
   animation.goToAndStop(0);
